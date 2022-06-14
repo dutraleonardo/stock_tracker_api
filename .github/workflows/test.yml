@@ -1,0 +1,62 @@
+name: Elixir Build and Test
+env:
+  MIX_ENV: test
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:12.3
+        ports: ['5432:5432']
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: stock_tracker_api_test
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Setup elixir
+        uses: erlef/setup-elixir@v1
+        with:
+          elixir-version: 1.13.2
+          otp-version: 24.2
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get deps cache
+        uses: actions/cache@v2
+        with:
+          path: deps/
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-deps-
+
+      - name: Get build cache
+        uses: actions/cache@v2
+        with:
+          path: _build/test/
+          key: ${{ runner.os }}-build-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-build-
+
+      - name: Install Dependencies
+        run: |
+          mix deps.get
+          mix compile --warnings-as-errors
+      - name: Migrate Base
+        run: |
+          mix ecto.create
+          mix ecto.migrate
+          mix run priv/repo/seeds.exs
+      - name: Check format
+        run: |
+          mix format --check-formatted
+      - name: Check CREDO
+        run: |
+          mix credo --strict
+      - name: Run Tests
+        run: |
+          mix coveralls.github --warnings-as-errors --raise
