@@ -1,7 +1,7 @@
 FROM elixir:1.11.4-alpine as build
 
 # install build dependencies
-RUN apk add --no-cache build-base npm git python3
+RUN apk add --no-cache build-base git python3
 
 # prepare build dir
 WORKDIR /app
@@ -18,13 +18,7 @@ COPY mix.exs mix.lock ./
 COPY config config
 RUN mix do deps.get, deps.compile
 
-# build assets
-COPY assets/package.json assets/package-lock.json ./assets/
-RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
-
 COPY priv priv
-COPY assets assets
-RUN npm run --prefix ./assets deploy
 RUN mix phx.digest
 
 # compile and build release
@@ -41,7 +35,7 @@ RUN apk add --no-cache openssl ncurses-libs bash postgresql-client
 RUN mkdir /app
 WORKDIR /app
 
-COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/hello_heroku ./
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/stock_tracker_api ./
 COPY entrypoint.sh .
 
 RUN chown -R nobody: /app
