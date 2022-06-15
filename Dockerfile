@@ -1,4 +1,4 @@
-FROM elixir:1.11.4-alpine as build
+FROM elixir:1.12-alpine as build
 
 # install build dependencies
 RUN apk add --no-cache build-base git python3
