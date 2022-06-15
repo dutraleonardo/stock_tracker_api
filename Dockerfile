@@ -35,7 +35,7 @@ RUN apk add --no-cache openssl ncurses-libs bash postgresql-client
 RUN apk upgrade --no-cache && \
     apk add --no-cache bash openssl libgcc libstdc++ ncurses-libs
 
-ENV USER="finiam"
+ENV USER=finiam
 ENV HOME=/home/"${USER}"
 ENV APP_DIR="${HOME}/app"
 
