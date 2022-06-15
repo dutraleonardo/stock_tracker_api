@@ -2,6 +2,8 @@
 
 [![Elixir Build and Test](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/test.yml/badge.svg)](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/test.yml)
 
+[![DEPLOY](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/deploy.yml/badge.svg)](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/deploy.yml)
+
 #### How to run:
 
 1. Using docker-compose
