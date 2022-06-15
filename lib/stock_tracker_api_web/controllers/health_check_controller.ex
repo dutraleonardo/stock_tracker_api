@@ -1,7 +1,7 @@
 defmodule StockTrackerApiWeb.HealthCheckController do
-@moduledoc """
-This module contains a controller funtionc that returns if app and database are running properly.
-"""
+  @moduledoc """
+  This module contains a controller funtionc that returns if app and database are running properly.
+  """
   use StockTrackerApiWeb, :controller
 
   def health(conn, _params) do
