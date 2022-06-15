@@ -1,5 +1,7 @@
 # StockTrackerApi
 
+[![test](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/dutraleonardo/rushing_to_thescore/actions/workflows/test.yml)
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
