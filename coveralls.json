@@ -1,0 +1,16 @@
+{
+    "coverage_options": {
+      "output_dir": "cover/",
+      "minimum_coverage": 40
+    },
+    "terminal_options": {
+      "print_files": true,
+      "file_column_width": 80
+    },
+    "skip_files": [
+        "lib/stock_tracker_api_web/router.ex",
+        "lib/stock_tracker_api_web/api_spec.ex",
+        "mix.exs",
+        "lib/stock_tracker_api_web/schemas.ex"
+      ]
+  }

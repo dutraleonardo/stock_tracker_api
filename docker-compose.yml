@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:11-alpine
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+
+  web:
+    image: elixir:1.13.2-alpine
+    command: >
+      /bin/sh -c
+      'mix local.hex --force &&
+      mix local.rebar --force &&
+      mix deps.get &&
+      mix ecto.setup &&
+      ./start.sh'
+    ports:
+      - '4000:4000'
+    expose:
+      - '4000'
+    depends_on:
+      - postgres
+    working_dir: /app
+    env_file: .env
+    volumes:
+      - ./:/app/
+      - elixir-deps:/app/deps/
+      - elixir-build:/app/_build/
+
+  # web:
+  #   build: .
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     MIX_ENV: dev
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - '4000:4000'
+  #   volumes:
+  #     - .:/app
+volumes:
+  postgres-data: {}
+  elixir-deps: {}
+  elixir-build: {}
