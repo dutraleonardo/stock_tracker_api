@@ -1,6 +1,6 @@
 # StockTrackerApi
 
-[![test](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/test.yml)
+[![Elixir Build and Test](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/test.yml/badge.svg)](https://github.com/dutraleonardo/stock_tracker_api/actions/workflows/test.yml)
 
 To start your Phoenix server:
 
