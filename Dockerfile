@@ -35,30 +35,15 @@ RUN apk add --no-cache openssl ncurses-libs bash postgresql-client
 RUN apk upgrade --no-cache && \
     apk add --no-cache bash openssl libgcc libstdc++ ncurses-libs
 
-ENV USER=finiam
-ENV HOME=/home/"${USER}"
-ENV APP_DIR="${HOME}/app"
+RUN mkdir /app
+WORKDIR /app
 
-# Creates an unprivileged user to be used exclusively to run the Phoenix app
-RUN \
-  addgroup \
-   -g 1000 \
-   -S "${USER}" && \
-  adduser \
-   -s /bin/sh \
-   -u 1000 \
-   -G "${USER}" \
-   -h "${HOME}" \
-   -D "${USER}" && \
-  su "${USER}" sh -c "mkdir ${APP_DIR}"
-
-
-# Everything from this line onwards will run in the context of the unprivileged user.
-USER "${USER}"
-
-WORKDIR "${APP_DIR}"
-
-COPY --from=build --chown="${USER}":"${USER}" /app/_build/prod/rel/stock_tracker_api ./
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/stock_tracker_api ./
 COPY entrypoint.sh .
+
+RUN chown -R nobody: /app
+USER nobody
+
+ENV HOME=/app
 
 CMD ["bash", "/app/entrypoint.sh"]
