@@ -1,12 +1,7 @@
 FROM elixir:1.12-alpine as build
 
 # install build dependencies
-RUN apk add --no-cache build-base \
-  git \
-  make \
-  gcc \
-  libc-dev \
-  python3
+RUN apk add --no-cache build-base npm git python3
 
 # prepare build dir
 WORKDIR /app
@@ -37,15 +32,33 @@ FROM alpine:3.16 AS app
 # added bash and postgresql-client for entrypoint.sh
 RUN apk add --no-cache openssl ncurses-libs bash postgresql-client
 
-RUN mkdir /app
-WORKDIR /app
+RUN apk upgrade --no-cache && \
+    apk add --no-cache bash openssl libstdc++ ncurses-libs
 
-COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/stock_tracker_api ./
+ENV USER="finiam"
+ENV HOME=/home/"${USER}"
+ENV APP_DIR="${HOME}/app"
+
+# Creates an unprivileged user to be used exclusively to run the Phoenix app
+RUN \
+  addgroup \
+   -g 1000 \
+   -S "${USER}" && \
+  adduser \
+   -s /bin/sh \
+   -u 1000 \
+   -G "${USER}" \
+   -h "${HOME}" \
+   -D "${USER}" && \
+  su "${USER}" sh -c "mkdir ${APP_DIR}"
+
+
+# Everything from this line onwards will run in the context of the unprivileged user.
+USER "${USER}"
+
+WORKDIR "${APP_DIR}"
+
+COPY --from=build --chown="${USER}":"${USER}" /app/_build/prod/rel/stock_tracker_api ./
 COPY entrypoint.sh .
-
-RUN chown -R nobody: /app
-USER nobody
-
-ENV HOME=/app
 
 CMD ["bash", "/app/entrypoint.sh"]
