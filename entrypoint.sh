@@ -8,7 +8,7 @@ do
   sleep 2
 done
 
-bin="/app/bin/hello_heroku"
+bin="/app/bin/stock_tracker_api"
 
 # migrate the database
 echo "starting Migrations"
