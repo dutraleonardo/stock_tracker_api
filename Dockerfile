@@ -1,7 +1,12 @@
 FROM elixir:1.12-alpine as build
 
 # install build dependencies
-RUN apk add --no-cache build-base git python3
+RUN apk add --no-cache build-base \
+  git \
+  make \
+  gcc \
+  libc-dev \
+  python3
 
 # prepare build dir
 WORKDIR /app
