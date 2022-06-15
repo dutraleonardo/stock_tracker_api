@@ -33,7 +33,7 @@ FROM alpine:3.16 AS app
 RUN apk add --no-cache openssl ncurses-libs bash postgresql-client
 
 RUN apk upgrade --no-cache && \
-    apk add --no-cache bash openssl libstdc++ ncurses-libs
+    apk add --no-cache bash openssl libgcc libstdc++ ncurses-libs
 
 ENV USER="finiam"
 ENV HOME=/home/"${USER}"
