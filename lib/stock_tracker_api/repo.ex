@@ -1,4 +1,6 @@
 defmodule StockTrackerApi.Repo do
+  alias Ecto.Adapters.SQL
+
   use Ecto.Repo,
     otp_app: :stock_tracker_api,
     adapter: Ecto.Adapters.Postgres
@@ -8,7 +10,7 @@ defmodule StockTrackerApi.Repo do
   """
   @spec connected?() :: boolean()
   def connected? do
-    case Ecto.Adapters.SQL.query(__MODULE__, "SELECT 1") do
+    case SQL.query(__MODULE__, "SELECT 1") do
       {:ok, _} -> true
       {:error, _} -> false
     end

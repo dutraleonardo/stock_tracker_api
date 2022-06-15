@@ -1,4 +1,6 @@
 defmodule StockTrackerApi.Release do
+  @moduledoc false
+
   @app :stock_tracker_api
 
   def migrate do
