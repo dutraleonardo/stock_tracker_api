@@ -16,9 +16,9 @@ import Config
 #
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
-if System.get_env("PHX_SERVER") do
-  config :stock_tracker_api, StockTrackerApiWeb.Endpoint, server: true
-end
+# if System.get_env("PHX_SERVER") do
+#   config :stock_tracker_api, StockTrackerApiWeb.Endpoint, server: true
+# end
 
 if config_env() == :prod do
   database_url =
@@ -27,8 +27,6 @@ if config_env() == :prod do
       environment variable DATABASE_URL is missing.
       For example: ecto://USER:PASS@HOST/DATABASE
       """
-
-  maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
 
   config :stock_tracker_api, StockTrackerApi.Repo,
     ssl: true,
@@ -47,20 +45,18 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || "4000")
-
   config :stock_tracker_api, StockTrackerApiWeb.Endpoint,
-    url: [host: host, port: 443, scheme: "https"],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
       # See the documentation on https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html
       # for details about using IPv6 vs IPv4 and loopback vs public addresses.
       port: String.to_integer(System.get_env("PORT") || "4000"),
-      transport_options: [socket_opts: maybe_ipv6]
+      transport_options: [socket_opts: [socket_opts: [:inet6]]]
     ],
     secret_key_base: secret_key_base
+
+  config :stock_tracker_api, StockTrackerApiWeb.Endpoint, server: true
 
   # ## Configuring the mailer
   #

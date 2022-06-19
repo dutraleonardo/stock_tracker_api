@@ -52,7 +52,9 @@ defmodule StockTrackerApi.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.10", only: :test},
+      {:httpoison, "~> 1.8"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 
