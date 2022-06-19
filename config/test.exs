@@ -26,5 +26,10 @@ config :stock_tracker_api, StockTrackerApi.Mailer, adapter: Swoosh.Adapters.Test
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-# Initialize plugs at runtime for faster test compilation
+# Initialize plugs at runtime for faster test compilationww
 config :phoenix, :plug_init_mode, :runtime
+
+config :stock_tracker_api, api_client: StockTrackerApi.ClientBehaviour
+
+config :stock_tracker_api, StockTrackerApi.ClientTest,
+  host: "https://www.alphavantage.co/query"
