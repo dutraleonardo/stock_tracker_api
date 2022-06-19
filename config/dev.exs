@@ -60,10 +60,10 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
-config :stock_tracker_api, StockTrackerApi.Client,
+config :stock_tracker_api, StockTrackerApi.Client.Api,
   host: System.get_env("ALPHA_VANTAGE_API_URL"),
   api_key: System.get_env("ALPHA_VANTAGE_API_KEY"),
   daily_limit: System.get_env("ALPHA_VANTAGE_DAILY_LIMIT"),
   minute_limit: System.get_env("ALPHA_VANTAGE_MINUTE_LIMIT")
 
-config :stock_tracker_api, api_client: StockTrackerApi.Client
+config :stock_tracker_api, client_impl: StockTrackerApi.Client.Api

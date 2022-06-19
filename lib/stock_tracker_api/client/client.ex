@@ -1,13 +1,4 @@
 defmodule StockTrackerApi.Client do
-  @moduledoc """
-  A client to get data from Alpha Vantage API.
-  """
-
-  use HTTPoison.Base
-
-  alias StockTrackerApi.Client.Helper
-
-  @behaviour StockTrackerApi.ClientBehaviour
 
   @doc """
   Uses Alpha Vantage's `GLOBAL_QUOTE` function.
@@ -15,7 +6,7 @@ defmodule StockTrackerApi.Client do
   Args:
   * `symbol` - The symbol of the security to use. E.g. `TSLA`
   ## Examples:
-      iex> StockTrackerApi.Client.global_quote("TSLA")
+      iex> StockTrackerApi.Client.call(:global_quote, "TSLA")
       %{
         "Global Quote" => %{
             "01. symbol" => "TSLA",
@@ -32,38 +23,9 @@ defmodule StockTrackerApi.Client do
       }
   """
 
-  def global_quote(symbol) do
-    params = %{
-      function: "GLOBAL_QUOTE",
-      symbol: symbol,
-      apikey: config(:api_key)
-    }
+  def call(:global_quote, symbol), do: client_impl().global_quote(symbol)
 
-    api_client().do_get(config(:host), params)
-  end
+  def call(function, _), do: {:error, "Function :#{function} not implemented yet."}
 
-  def api_client, do: Application.get_env(:stock_tracker_api, :api_client)
-
-  defp do_get(url, params) do
-    url
-    |> get([], params: params)
-    |> handle_response()
-  end
-
-  defp handle_response(response) do
-    case response do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok,
-         Jason.decode!(body)
-         |> Helper.resolve_response()}
-
-      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
-        if status >= 300 and status < 400, do: {:ok, body}, else: {:error, status}
-
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        {:error, reason}
-    end
-  end
-
-  defp config(key), do: Application.get_env(:stock_tracker_api, __MODULE__) |> Keyword.get(key)
+  defp client_impl, do: Application.get_env(:stock_tracker_api, :client_impl)
 end

@@ -29,7 +29,9 @@ config :logger, level: :warn
 # Initialize plugs at runtime for faster test compilationww
 config :phoenix, :plug_init_mode, :runtime
 
-config :stock_tracker_api, api_client: StockTrackerApi.ClientBehaviour
+config :stock_tracker_api, StockTrackerApi.Client.Api, api_key: "TESTE_API_KEY"
 
-config :stock_tracker_api, StockTrackerApi.ClientTest,
+config :stock_tracker_api, client_impl: ClientApiBehaviourMock
+
+config :stock_tracker_api, StockTrackerApi.Client.Api,
   host: "https://www.alphavantage.co/query"
