@@ -1,4 +1,7 @@
 defmodule StockTrackerApi.Client do
+  @moduledoc """
+  A client to get data from Alpha Vantage API.
+  """
 
   @doc """
   Uses Alpha Vantage's `GLOBAL_QUOTE` function.

@@ -33,5 +33,4 @@ config :stock_tracker_api, StockTrackerApi.Client.Api, api_key: "TESTE_API_KEY"
 
 config :stock_tracker_api, client_impl: ClientApiBehaviourMock
 
-config :stock_tracker_api, StockTrackerApi.Client.Api,
-  host: "https://www.alphavantage.co/query"
+config :stock_tracker_api, StockTrackerApi.Client.Api, host: "https://www.alphavantage.co/query"

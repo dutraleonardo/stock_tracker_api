@@ -1,14 +1,11 @@
 defmodule StockTrackerApi.Client.Api do
-  @moduledoc """
-  A client to get data from Alpha Vantage API.
-  """
+  @moduledoc false
 
   use HTTPoison.Base
 
   alias StockTrackerApi.Client.Helper
 
   @behaviour StockTrackerApi.Client.ApiBehaviour
-
 
   def global_quote(symbol) do
     params = %{
@@ -32,8 +29,7 @@ defmodule StockTrackerApi.Client.Api do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok,
          Jason.decode!(body)
-         |> Helper.resolve_response()
-        }
+         |> Helper.resolve_response()}
 
       {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
         if status >= 300 and status < 400, do: {:ok, body}, else: {:error, error_msg("status #{status}")}
