@@ -62,8 +62,12 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :stock_tracker_api, StockTrackerApi.Client.Api,
   host: System.get_env("ALPHA_VANTAGE_API_URL"),
-  api_key: System.get_env("ALPHA_VANTAGE_API_KEY"),
-  daily_limit: System.get_env("ALPHA_VANTAGE_DAILY_LIMIT"),
-  minute_limit: System.get_env("ALPHA_VANTAGE_MINUTE_LIMIT")
+  api_key: System.get_env("ALPHA_VANTAGE_API_KEY")
 
 config :stock_tracker_api, client_impl: StockTrackerApi.Client.Api
+
+config :stock_tracker_api, StockTrackerApi.Monitor,
+  daily_limit: System.get_env("ALPHA_VANTAGE_DAILY_LIMIT"),
+  minute_limit: System.get_env("ALPHA_VANTAGE_MINUTE_LIMIT"),
+  job_timeframe: 10000,
+  requests_timeframe: 60000

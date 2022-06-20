@@ -5,6 +5,8 @@ defmodule StockTrackerApi.Application do
 
   use Application
 
+  alias StockTrackerApi.Monitor.RateLimiterServer
+
   @impl true
   def start(_type, _args) do
     children = [
@@ -15,9 +17,16 @@ defmodule StockTrackerApi.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: StockTrackerApi.PubSub},
       # Start the Endpoint (http/https)
-      StockTrackerApiWeb.Endpoint
+      StockTrackerApiWeb.Endpoint,
       # Start a worker by calling: StockTrackerApi.Worker.start_link(arg)
       # {StockTrackerApi.Worker, arg}
+
+      # Rate Limiter Server
+      {StockTrackerApi.Monitor.RateLimiterServer, []},
+
+      # Monitor worker configutations
+      {Task.Supervisor, name: MonitorServer.TaskSupervisor},
+      {StockTrackerApi.MonitorServer, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
