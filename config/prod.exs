@@ -14,6 +14,13 @@ config :stock_tracker_api, StockTrackerApiWeb.Endpoint,
   url: [scheme: "https", host: "finiam-stock-tracker-api.herokuapp.com", port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]]
 
+config :stock_tracker_api, StockTrackerApi.Monitor.RateLimiterServer,
+  daily_limit: System.get_env("ALPHA_VANTAGE_DAILY_LIMIT"),
+  minute_limit: System.get_env("ALPHA_VANTAGE_MINUTE_LIMIT"),
+  requests_timeframe: System.get_env("REQUESTS_TIMEFRAME")
+
+config :stock_tracker_api, StockTrackerApi.MonitorServer, job_timeframe: System.get_env("JOB_TIMEFRAME")
+
 # Do not print debug messages in production
 config :logger, level: :info
 

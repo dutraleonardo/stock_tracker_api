@@ -66,8 +66,9 @@ config :stock_tracker_api, StockTrackerApi.Client.Api,
 
 config :stock_tracker_api, client_impl: StockTrackerApi.Client.Api
 
-config :stock_tracker_api, StockTrackerApi.Monitor,
+config :stock_tracker_api, StockTrackerApi.Monitor.RateLimiterServer,
   daily_limit: System.get_env("ALPHA_VANTAGE_DAILY_LIMIT"),
   minute_limit: System.get_env("ALPHA_VANTAGE_MINUTE_LIMIT"),
-  job_timeframe: 10000,
-  requests_timeframe: 60000
+  requests_timeframe: 60_000
+
+config :stock_tracker_api, StockTrackerApi.MonitorServer, job_timeframe: 600_000

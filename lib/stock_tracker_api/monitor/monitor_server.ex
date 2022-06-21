@@ -7,70 +7,69 @@ defmodule StockTrackerApi.MonitorServer do
   use GenServer
 
   alias StockTrackerApi.Client
-  alias StockTrackerApi.Monitor
   alias StockTrackerApi.Monitor.RateLimiterServer
+  alias StockTrackerApi.StockTickerRepo
 
   require Logger
 
-  @job_timeframe Monitor.get_job_schedule_time()
-  @retry_after_fail Monitor.retry_after()
+  @job_timeframe Application.compile_env!(:stock_tracker_api, __MODULE__) |> Keyword.get(:job_timeframe)
 
   def start_link(_default) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def init(_) do
-    {:ok, %{tasks: %{}}}
+    state = %{
+      function: nil,
+      symbol: nil
+    }
+
+    {:ok, state}
   end
 
   def make_request(function, symbol) do
-    GenServer.call(__MODULE__, {:request, {function, symbol}})
-
+    GenServer.cast(__MODULE__, {:request, {function, symbol}})
   end
 
-  def handle_call({:request, {function, symbol}}, _from, state) do
-    case RateLimiterServer.status() do
-      :ok ->
-        task =
-            Task.Supervisor.async_nolink(MonitorServer.TaskSupervisor, fn ->
-              RateLimiterServer.update_counter()
-              Client.call(function, symbol)
-            end)
-
-        state = put_in(state.tasks[task.ref], symbol)
-
-        schedule_next_job()
-        {:reply, :ok, state}
-
-      {:error, reason} ->
-        Logger.info("Failed to process #{symbol}, error caused by #{reason}")
-        schedule_failed_job()
-
-    end
-
+  def handle_cast({:request, {function, symbol}}, state) do
+    async_request(function, symbol)
+    schedule_next_job(function, symbol)
+    {:noreply, %{state | function: function, symbol: symbol}}
   end
 
-  def handle_info({ref, {:ok, result}}, state) do
-    # The task succeed so we can cancel the monitoring and discard the DOWN message
-    Process.demonitor(ref, [:flush])
-
-    {symbol, state} = pop_in(state.tasks[ref])
-    Logger.info("Got #{inspect(result)} for stock ticker: #{inspect symbol}")
-    {:noreply, result}
-  end
-
-  # If the task fails...
-  def handle_info({:DOWN, ref, _, _, reason}, state) do
-    {symbol, state} = pop_in(state.tasks[ref])
-    Logger.info("Stock ticker #{inspect symbol} failed with reason #{inspect(reason)}")
+  def handle_info({:request, {function, symbol}}, state) do
+    async_request(function, symbol)
+    schedule_next_job(function, symbol)
     {:noreply, state}
   end
 
-  defp schedule_failed_job() do
-    Process.send_after(self(), :request, @retry_after_fail)
+  def handle_info({ref, _result}, state) do
+    Process.demonitor(ref, [:flush])
+
+    {:noreply, state}
   end
 
-  defp schedule_next_job() do
-    Process.send_after(self(), :request, @job_timeframe)
+  # If the task fails...
+  def handle_info({:DOWN, _ref, _, _, reason}, state) do
+    Logger.info("Stock ticker #{inspect(state.symbol)} failed with reason #{inspect(reason)}")
+    {:noreply, state}
+  end
+
+  defp async_request(function, symbol) do
+    case RateLimiterServer.available?() do
+      :ok ->
+        Task.Supervisor.async_nolink(MonitorServer.TaskSupervisor, fn ->
+          {:ok, data} = Client.call(function, symbol)
+          StockTickerRepo.full_insert(data)
+        end)
+
+      {:error, reason} ->
+        Logger.info("Failed to process #{symbol}, error caused by #{reason}")
+    end
+  end
+
+  defp schedule_next_job(function, symbol) do
+    Logger.info("Schedule: The next run of #{symbol} will take place in #{@job_timeframe / 1000} seconds")
+    Process.send_after(self(), {:request, {function, symbol}}, @job_timeframe)
   end
 end

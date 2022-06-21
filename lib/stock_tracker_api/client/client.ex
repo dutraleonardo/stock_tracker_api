@@ -10,18 +10,18 @@ defmodule StockTrackerApi.Client do
   * `symbol` - The symbol of the security to use. E.g. `TSLA`
   ## Examples:
       iex> StockTrackerApi.Client.call(:global_quote, "TSLA")
-      %{
-        "Global Quote" => %{
-            "01. symbol" => "TSLA",
-            "02. open" => "640.3000",
-            "03. high" => "662.9082",
-            "04. low" => "639.5900",
-            "05. price" => "650.2800",
-            "06. volume" => "30547170",
-            "07. latest trading day" => "2022-06-17",
-            "08. previous close" => "639.3000",
-            "09. change" => "10.9800",
-            "10. change percent" => "1.7175%"
+      {:ok,
+        %{
+          change: "10.9800",
+          change_percent: "1.7175%",
+          high: "662.9082",
+          latest_trading_day: "2022-06-17",
+          low: "639.5900",
+          open: "640.3000",
+          previous_close: "639.3000",
+          price: "650.2800",
+          symbol: "TSLA",
+          volume: "30880590"
         }
       }
   """

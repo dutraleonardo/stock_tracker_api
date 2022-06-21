@@ -6,7 +6,7 @@ defmodule StockTrackerApiWeb.Router do
     plug :accepts, ["json"]
   end
 
-  get("/", StockTrackerApiWeb.HealthCheckController, :health)
+  get("/health", StockTrackerApiWeb.HealthCheckController, :health)
 
   scope "/api", StockTrackerApiWeb do
     pipe_through :api
