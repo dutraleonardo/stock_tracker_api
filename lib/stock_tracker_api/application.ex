@@ -5,8 +5,6 @@ defmodule StockTrackerApi.Application do
 
   use Application
 
-  alias StockTrackerApi.Monitor.RateLimiterServer
-
   @impl true
   def start(_type, _args) do
     children = [
