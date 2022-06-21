@@ -51,7 +51,9 @@ if config_env() == :prod do
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
       # See the documentation on https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html
       # for details about using IPv6 vs IPv4 and loopback vs public addresses.
+      host: "finiam-stock-tracker-api.herokuapp.com",
       port: String.to_integer(System.get_env("PORT") || "4000"),
+      scheme: "https",
       transport_options: [socket_opts: [socket_opts: [:inet6]]]
     ],
     secret_key_base: secret_key_base

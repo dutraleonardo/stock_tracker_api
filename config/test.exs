@@ -34,3 +34,10 @@ config :stock_tracker_api, StockTrackerApi.Client.Api, api_key: "TESTE_API_KEY"
 config :stock_tracker_api, client_impl: ClientApiBehaviourMock
 
 config :stock_tracker_api, StockTrackerApi.Client.Api, host: "https://www.alphavantage.co/query"
+
+config :stock_tracker_api, StockTrackerApi.Monitor.RateLimiterServer,
+  daily_limit: "500",
+  minute_limit: "5",
+  requests_timeframe: 60_000
+
+config :stock_tracker_api, StockTrackerApi.MonitorServer, job_timeframe: 600_000

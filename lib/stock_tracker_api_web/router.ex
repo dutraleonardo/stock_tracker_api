@@ -1,14 +1,22 @@
 defmodule StockTrackerApiWeb.Router do
   use StockTrackerApiWeb, :router
+  use Plug.ErrorHandler
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  get("/", StockTrackerApiWeb.HealthCheckController, :health)
+  get("/health", StockTrackerApiWeb.HealthCheckController, :health)
 
   scope "/api", StockTrackerApiWeb do
     pipe_through :api
+
+    post("/track", TrackController, :create)
+  end
+
+  def handle_errors(conn, %{kind: _kind, reason: reason, stack: _stack}) do
+    conn
+    |> send_resp(conn.status, reason)
   end
 
   # Enables LiveDashboard only for development
