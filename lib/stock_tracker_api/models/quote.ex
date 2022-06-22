@@ -7,6 +7,8 @@ defmodule StockTrackerApi.Quote do
 
   import Ecto.Changeset
 
+  @derive {Jason.Encoder,
+           only: [:change, :change_percent, :high, :latest_trading_day, :low, :open, :previous_close, :price, :volume]}
   schema "quotes" do
     field :change, :decimal
     field :change_percent, :decimal
