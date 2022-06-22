@@ -43,9 +43,21 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
     ```
 * This request trigger a GenServer called MonitorServer that execute a request to Alpha Vantage API every 10 minutes to get the last stock quote and save it.
 * In parallel, another GenServer called RateLimiterServer that checks if request limit will not be extrapolated. Alpha Vantage API has limits by minute and day.
+* If you want to search for data you cand send a **GET** request to /status endpoint with the following parameters:
+    ```
+    start: YYYY-MM-DD
+    end: YYYY-MM-DD
+    stock_ticker: TSLA
+    min_volume: 30880589
+    ```
 
 #### Resources:
 * Take a look on **postman**, there is a postman collection.
+
+## Live API URL:
+[Stock Tracker API](https://finiam-stock-tracker-api.herokuapp.com/)
+&&
+[Stock Tracker API Health Check](https://finiam-stock-tracker-api.herokuapp.com/api/health)
 
 ## Learn more
 

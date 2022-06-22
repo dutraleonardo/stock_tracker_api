@@ -6,6 +6,7 @@ defmodule StockTrackerApi.StockTicker do
 
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:symbol]}
   schema "stock_tickers" do
     field :symbol, :string
 
